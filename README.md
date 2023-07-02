@@ -2,7 +2,7 @@
 自用bash脚本，防止openclash崩溃影响全局网络  
 openclash作为adguardhome上游，循环监测openclash的DNS是否正常  
   
-这是一个Bash脚本，用于监测和切换DNS服务器。它使用AdGuardHome作为DNS服务器，openclash作为上游服务器。  
+这是一个Bash脚本，用于监测和切换DNS服务器。它使用AdGuardHome作为DNS服务器，openclash作为上游服务器。当主DNS异常则切换备用DNS，当主DNS恢复正常则切换回来。  
 
 脚本首先定义了一些变量，包括AdGuardHome的配置文件路径、主DNS服务器地址和备用DNS服务器地址等。  
 
