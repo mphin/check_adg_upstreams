@@ -2,7 +2,6 @@
 
 # 设置相关变量
 config_file="/etc/AdGuardHome.yaml"  # AdGuardHome配置文件路径
-webhook_url="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=3f96cd4a-2f3f-4cc8-99ba-2ea90dcf6b1f"  # 企业微信Webhook地址
 primary_dns="192.168.10.254:7874"  # 主DNS服务器地址
 backup_dns="119.29.29.29"  # 备用DNS服务器地址
 LOG_FILE="/tmp/log/777/check_adg_dns.log"
@@ -73,14 +72,6 @@ main() {
       if [[ "$current_dns_server" != "$primary_dns" ]]; then
         modify_config_file_1
         restart_adguard_service
-            sleep 8
-            curl -s -H "Content-Type: application/json" -d '
-            {
-              "msgtype": "text",
-              "text": {
-                "content": "主DNS正常，切换到主DNS"
-              }
-            }' "$webhook_url" >/dev/null 2>&1   # 使用curl命令将消息推送到企业微信
             echo "$(date '+%Y-%m-%d %H:%M:%S') - [INFO] 网络恢复正常，AdGuardHome当前上游为$(get_dns_server)" | tee -a "$LOG_FILE"
             echo "$(date '+%Y-%m-%d %H:%M:%S') - [INFO] 主DNS切换完毕，持续检测主DNS..." | tee -a "$LOG_FILE"
       fi
@@ -98,14 +89,6 @@ else
       if [[ $current_dns_server == "$primary_dns" ]]; then
         modify_config_file
         restart_adguard_service
-            sleep 8
-            curl -s -H "Content-Type: application/json" -d '
-            {
-              "msgtype": "text",
-              "text": {
-                "content": "主DNS不正常，切换到备用DNS"
-              }
-            }' "$webhook_url" >/dev/null 2>&1   # 使用curl命令将消息推送到企业微信
             echo "$(date '+%Y-%m-%d %H:%M:%S') - [INFO] 网络恢复正常，AdGuardHome当前上游为$(get_dns_server)" | tee -a "$LOG_FILE"
             echo "$(date '+%Y-%m-%d %H:%M:%S') - [INFO] 持续检测主DNS中...当主DNS恢复正常则切换回来" | tee -a "$LOG_FILE"
       fi
